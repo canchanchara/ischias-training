@@ -1,0 +1,188 @@
+<title>Ischias-Training</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#2a8c80">
+<link rel="stylesheet" href="css/styles.css">
+
+  <!-- ================= Startseite / Tagesplan ================= -->
+  <main id="view-home" class="view">
+    <header class="app-header">
+      <h1>Ischias-Training</h1>
+      <p class="subtitle">Jeden Tag ein etwas anderer Plan – sanft, geführt, mit Timer &amp; Musik.</p>
+    </header>
+
+    <section class="card day-card">
+      <div class="day-nav">
+        <button class="icon-btn" id="day-prev" aria-label="Vorheriger Tag">‹</button>
+        <div class="day-label">
+          <strong id="day-title">Heute</strong>
+          <span id="day-date"></span>
+        </div>
+        <button class="icon-btn" id="day-next" aria-label="Nächster Tag">›</button>
+      </div>
+
+      <div class="segmented" role="radiogroup" aria-label="Intensität" id="level-switch"></div>
+      <p class="hint" id="level-hint"></p>
+
+      <div class="summary">
+        <span id="sum-count"></span>
+        <span class="dot">•</span>
+        <span id="sum-time"></span>
+        <span id="done-badge" class="badge" hidden>✓ heute erledigt</span>
+      </div>
+
+      <ol id="plan-list" class="plan-list"></ol>
+
+      <button id="start-btn" class="primary big">▶ Training starten</button>
+    </section>
+
+    <section class="card">
+      <h2>Musik &amp; Ansagen</h2>
+      <label class="row">
+        <span>Musik</span>
+        <select id="music-select">
+          <option value="ambient">Ruhiger Klangteppich</option>
+          <option value="waves">Meeresrauschen</option>
+          <option value="file">Eigene Musikdatei …</option>
+          <option value="off">Aus</option>
+        </select>
+      </label>
+      <label class="row" id="file-row" hidden>
+        <span>Datei</span>
+        <input type="file" id="music-file" accept="audio/*">
+      </label>
+      <label class="row">
+        <span>Lautstärke</span>
+        <input type="range" id="volume" min="0" max="1" step="0.05">
+      </label>
+      <label class="row switch">
+        <span>Sprachansagen</span>
+        <input type="checkbox" id="voice-toggle">
+      </label>
+      <label class="row switch">
+        <span>Countdown-Töne</span>
+        <input type="checkbox" id="beep-toggle">
+      </label>
+      <button id="music-test" class="secondary">Musik probehören</button>
+    </section>
+
+    <section class="card">
+      <h2>Verlauf</h2>
+      <p id="streak" class="streak"></p>
+      <ul id="history" class="history"></ul>
+    </section>
+
+    <footer class="footer">
+      <button class="link" id="show-disclaimer">Wichtige Hinweise &amp; Warnzeichen</button>
+    </footer>
+  </main>
+
+  <!-- ================= Training ================= -->
+  <main id="view-workout" class="view" hidden>
+    <div class="wo-top">
+      <button class="icon-btn" id="wo-close" aria-label="Training beenden">✕</button>
+      <div class="wo-progress">
+        <span id="wo-count"></span>
+        <div class="bar"><div id="wo-bar"></div></div>
+      </div>
+      <button class="icon-btn" id="wo-mute" aria-label="Musik stumm">♪</button>
+    </div>
+
+    <div class="wo-phase" id="wo-phase">Vorbereiten</div>
+    <h2 class="wo-name" id="wo-name"></h2>
+    <div class="wo-side" id="wo-side" hidden></div>
+
+    <div class="wo-stage">
+      <svg id="wo-figure" class="figure" role="img" aria-label="Animierte Darstellung der Übung"></svg>
+    </div>
+
+    <div class="wo-timer">
+      <svg viewBox="0 0 120 120" class="ring">
+        <circle cx="60" cy="60" r="52" class="ring-bg"/>
+        <circle cx="60" cy="60" r="52" class="ring-fg" id="wo-ring"/>
+      </svg>
+      <div class="wo-time" id="wo-time">0:00</div>
+    </div>
+
+    <div class="wo-controls">
+      <button class="icon-btn large" id="wo-prev" aria-label="Zurück">⏮</button>
+      <button class="primary round" id="wo-play" aria-label="Pause">❚❚</button>
+      <button class="icon-btn large" id="wo-next" aria-label="Weiter">⏭</button>
+    </div>
+
+    <section class="card wo-info">
+      <ol id="wo-steps" class="steps"></ol>
+      <p id="wo-tip" class="tip"></p>
+      <p id="wo-caution" class="caution"></p>
+    </section>
+    <p class="wo-remaining">Gesamt verbleibend: <span id="wo-total"></span></p>
+  </main>
+
+  <!-- ================= Fertig ================= -->
+  <main id="view-done" class="view" hidden>
+    <section class="card done-card">
+      <div class="done-icon">🎉</div>
+      <h2>Geschafft!</h2>
+      <p id="done-text"></p>
+      <label class="pain">
+        <span>Wie stark sind deine Schmerzen jetzt? <strong id="pain-value">3</strong>/10</span>
+        <input type="range" id="pain" min="0" max="10" step="1" value="3">
+        <span class="pain-scale"><span>keine</span><span>sehr stark</span></span>
+      </label>
+      <button id="done-save" class="primary big">Speichern</button>
+      <button id="done-skip" class="link">Ohne Speichern zurück</button>
+    </section>
+  </main>
+
+  <!-- ================= Detail einer Übung ================= -->
+  <dialog id="detail" class="sheet">
+    <form method="dialog" class="sheet-inner">
+      <button class="icon-btn close" aria-label="Schließen">✕</button>
+      <span class="chip" id="detail-cat"></span>
+      <h2 id="detail-name"></h2>
+      <p id="detail-short" class="muted"></p>
+      <svg id="detail-figure" class="figure" role="img" aria-label="Animierte Darstellung der Übung"></svg>
+      <ol id="detail-steps" class="steps"></ol>
+      <p id="detail-tip" class="tip"></p>
+      <p id="detail-caution" class="caution"></p>
+    </form>
+  </dialog>
+
+  <!-- ================= Beenden bestätigen ================= -->
+  <dialog id="confirm-exit" class="sheet">
+    <form method="dialog" class="sheet-inner">
+      <h2>Training beenden?</h2>
+      <p class="muted">Dein Fortschritt in dieser Einheit wird nicht gespeichert.</p>
+      <div class="dialog-actions">
+        <button class="secondary" value="cancel" id="exit-cancel">Weitermachen</button>
+        <button class="primary" value="exit" id="exit-confirm">Beenden</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ================= Hinweise ================= -->
+  <dialog id="disclaimer" class="sheet">
+    <form method="dialog" class="sheet-inner">
+      <h2>Bevor du startest</h2>
+      <p>Diese App ersetzt <strong>keine ärztliche oder physiotherapeutische Beratung</strong>. Sprich deinen Trainingsplan am besten mit deiner Ärztin, deinem Arzt oder deiner Physiotherapie ab.</p>
+      <h3>Sofort ärztlich abklären lassen bei</h3>
+      <ul class="warn-list">
+        <li>Taubheit im Genital-, Gesäß- oder Dammbereich („Reithosen-Gefühl“)</li>
+        <li>Problemen beim Wasserlassen oder Stuhlgang</li>
+        <li>zunehmender Schwäche oder Lähmung im Bein bzw. Fuß</li>
+        <li>Fieber, starkem nächtlichen Schmerz oder Schmerzen nach einem Unfall/Sturz</li>
+      </ul>
+      <h3>Beim Üben gilt</h3>
+      <ul>
+        <li>Leichtes Ziehen ist in Ordnung. Schmerzen, die stärker oder weiter ins Bein ausstrahlen, sind es nicht. Dann die Übung abbrechen oder kleiner ausführen.</li>
+        <li>Wandert der Schmerz aus dem Bein Richtung Rücken, ist das ein gutes Zeichen.</li>
+        <li>Langsam bewegen, ruhig weiteratmen, nichts erzwingen.</li>
+      </ul>
+      <button class="primary big" value="ok">Verstanden</button>
+    </form>
+  </dialog>
+
+  <script src="js/exercises.js"></script>
+  <script src="js/plan.js"></script>
+  <script src="js/figure.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
